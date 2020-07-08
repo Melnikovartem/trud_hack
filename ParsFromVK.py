@@ -8,7 +8,6 @@ def _information_about_user(user_link):
     fields = 'city,about,bdate,books,education,interests'
     response = requests.get(f'https://api.vk.com/method/users.get?access_token={token}&user_ids={user_link}&v=5.120&fields={fields}')
     return response.json()['response'][0]
-
 # Парсинг друзей
 def _ids_of_users_friends(user_id):
     global token
@@ -28,9 +27,7 @@ def pars_from_vk(user_id):
     information_about_user = _information_about_user(user_id)
     if information_about_user['is_closed']:
         return (-1, -1, -1)
-
     user_id = information_about_user['id']
-
     ids_of_users_friends = _ids_of_users_friends(user_id)
     information_about_users_groups = _information_about_users_groups(user_id)
     temp = []
