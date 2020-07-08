@@ -8,7 +8,7 @@ def _information_about_user(user_link):
     fields = 'city,about,bdate,books,education,interests'
     response = requests.get(f'https://api.vk.com/method/users.get?access_token={token}&user_ids={user_link}&v=5.120&fields={fields}')
     if response.json()['response'][0]['is_closed']:
-        return {}
+        return None
     return response.json()['response'][0]
 
 # Парсинг друзей
@@ -28,7 +28,7 @@ def pars_from_vk(user_id):
 
     # Тут мы получаем общую информацию и смотрим закрыт ли профиль
     information_about_user = _information_about_user(user_id)
-    if information_about_user == {}:
+    if information_about_user is None:
         return (-1, -1, -1)
 
     user_id = information_about_user['id']
