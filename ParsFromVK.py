@@ -39,17 +39,16 @@ def pars_from_vk(user_id):
         else:
             temp.append(element['name'])
     information_about_users_groups = temp
-    return (information_about_user, ids_of_users_friends, information_about_users_groups)
+    return (information_about_user, information_about_users_groups)
 
 if __name__ == '__main__':
     user = '108560854'
     if is_close(user):
         print('Pizdec')
     else:
-        a, b, c = pars_from_vk(user)
+        a, c = pars_from_vk(user)
         print(a)
         print('--------------------------------------------------------------------------------------')
-        print(b)
         print('--------------------------------------------------------------------------------------')
         print(c)
         print('--------------------------------------------------------------------------------------')
