@@ -34,12 +34,15 @@ def pars_from_vk(user_id):
     information_about_users_groups = _information_about_users_groups(_user_id)
     temp = []
     for element in information_about_users_groups:
-        temp.append(element['name'])
+        if element['type'] == 'profile':
+            temp.append(element['first_name'] + ' ' + element['last_name'])
+        else:
+            temp.append(element['name'])
     information_about_users_groups = temp
     return (information_about_user, ids_of_users_friends, information_about_users_groups)
 
 if __name__ == '__main__':
-    user = 'zacontent'
+    user = '108560854'
     if is_close(user):
         print('Pizdec')
     else:
