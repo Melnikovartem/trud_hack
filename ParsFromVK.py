@@ -30,7 +30,7 @@ def pars_from_vk(user_id):
     # Тут мы получаем общую информацию и смотрим закрыт ли профиль
     information_about_user = _information_about_user(user_id)
     _user_id = information_about_user['id']
-    ids_of_users_friends = _ids_of_users_friends(_user_id)
+    # ids_of_users_friends = _ids_of_users_friends(_user_id)
     information_about_users_groups = _information_about_users_groups(_user_id)
     temp = []
     for element in information_about_users_groups:
