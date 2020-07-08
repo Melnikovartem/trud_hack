@@ -30,7 +30,7 @@ def pars_from_vk(user_id):
     try:
         information_about_user = _information_about_user(user_id)
     except Exception:
-        raise('Please try again.(Maybe the profile is closed')
+        return (-1, -1, -1)
 
     user_id = information_about_user['id']
 
