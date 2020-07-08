@@ -20,13 +20,15 @@ def _information_about_users_groups(user_id):
     response = requests.get(f'https://api.vk.com/method/users.getSubscriptions?access_token={token}&user_id={user_id}&v=5.120&extended=1')
     return response.json()['response']['items']
 
+def is_close(user_id):
+    information_about_user = _information_about_user(user_id)
+    return information_about_user['is_closed']
+
 def pars_from_vk(user_id):
     information_about_user = {}
 
     # Тут мы получаем общую информацию и смотрим закрыт ли профиль
     information_about_user = _information_about_user(user_id)
-    if information_about_user['is_closed']:
-        return ({}, [], [])
     _user_id = information_about_user['id']
     ids_of_users_friends = _ids_of_users_friends(_user_id)
     information_about_users_groups = _information_about_users_groups(_user_id)
@@ -37,10 +39,14 @@ def pars_from_vk(user_id):
     return (information_about_user, ids_of_users_friends, information_about_users_groups)
 
 if __name__ == '__main__':
-    a, b, c = pars_from_vk('61802558')
-    print(a)
-    print('--------------------------------------------------------------------------------------')
-    print(b)
-    print('--------------------------------------------------------------------------------------')
-    print(c)
-    print('--------------------------------------------------------------------------------------')
+    user = 'zacontent'
+    if is_close(user):
+        print('Pizdec')
+    else:
+        a, b, c = pars_from_vk(user)
+        print(a)
+        print('--------------------------------------------------------------------------------------')
+        print(b)
+        print('--------------------------------------------------------------------------------------')
+        print(c)
+        print('--------------------------------------------------------------------------------------')
