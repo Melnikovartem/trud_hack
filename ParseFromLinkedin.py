@@ -2,7 +2,9 @@ from selenium import webdriver
 from parsel import Selector
 import time
 
-driver = webdriver.Chrome('chromedriver')
+options = webdriver.ChromeOptions()
+options.add_argument('headless')
+driver = webdriver.Chrome(chrome_options=options)
 sel = Selector(text=driver.page_source)
 
 
