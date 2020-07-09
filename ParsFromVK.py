@@ -8,6 +8,7 @@ def _information_about_user(user_link):
     fields = 'city,about,bdate,books,education,interests'
     response = requests.get(f'https://api.vk.com/method/users.get?access_token={token}&user_ids={user_link}&v=5.120&fields={fields}')
     return response.json()['response'][0]
+
 # Парсинг друзей
 def _ids_of_users_friends(user_id):
     global token
@@ -22,7 +23,7 @@ def _information_about_users_groups(user_id):
 
 def is_close(user_id):
     information_about_user = _information_about_user(user_id)
-    return information_about_user['is_closed']
+    return information_about_user.get('deactivated') is not None or information_about_user['is_closed']
 
 def pars_from_vk(user_id):
     information_about_user = {}
@@ -42,7 +43,8 @@ def pars_from_vk(user_id):
     return (information_about_user, information_about_users_groups)
 
 if __name__ == '__main__':
-    user = '108560854'
+    # user = '121538834'
+    user = 'zacontent'
     if is_close(user):
         print('Pizdec')
     else:
