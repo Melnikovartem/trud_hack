@@ -4,7 +4,7 @@ import time
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome(options=options)
 sel = Selector(text=driver.page_source)
 
 
@@ -98,9 +98,8 @@ def get_skills():
         driver.find_element_by_xpath('/html/body//main//section/div[2]/button').click()
     except Exception:
         pass
-    time.sleep(2)
     sel = Selector(text=driver.page_source)
-    skills = sel.xpath("/html/body//main//section//ol//following-sibling::span/text()").getall()
+    skills = sel.xpath("//*[@class='pv-profile-section pv-skill-categories-section artdeco-container-card ember-view']//following-sibling::span/text()").getall()
     skills = [e.strip() for e in skills]
     return skills
 
@@ -120,7 +119,7 @@ def parse_from_linkedin(user_id):
     res['organisations'] = get_organisations()
     res['experience'] = get_experience()
     res['languages'] = get_languages()
-    res['skills'] = get_skills()
+    # res['skills'] = get_skills()
     res['interests'] = get_interests()
     close()
     return res
