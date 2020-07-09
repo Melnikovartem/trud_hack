@@ -2,7 +2,7 @@ from selenium import webdriver
 from parsel import Selector
 import time
 
-driver = webdriver.Chrome('C:\chromedriver\chromedriver')
+driver = webdriver.Chrome('chromedriver')
 sel = Selector(text=driver.page_source)
 
 
@@ -134,5 +134,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-
