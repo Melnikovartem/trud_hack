@@ -1,48 +1,44 @@
 from selenium import webdriver
 from parsel import Selector
 import time
+import ParseFromLinkedin
+import json
+from pathlib import Path
 
-names = []
-options = webdriver.ChromeOptions()
-options.add_argument('headless')
-options.add_argument('window-size=1920x1080')
-driver = webdriver.Chrome(options=options)
-sel = Selector(text=driver.page_source)
-
-
-def get_profiles_on_page():
-    global driver, sel
-    profile_pages = sel.xpath("/html/body//ul/li/div/div/div/a/@href").getall()
-    temp = [profile_pages[i] for i in range(0, len(profile_pages), 2)]
-    profile_pages = temp
-    return profile_pages
-
-
-def search_and_get(name, position):
-    global driver, sel
-    driver.get('https://www.linkedin.com')
-    driver.find_element_by_class_name('nav__button-secondary').click()
-    time.sleep(1)
-    driver.find_element_by_id('username').send_keys('e_m_p_t_y_e@mail.ru')
-    driver.find_element_by_id('password').send_keys('12121212EM')
-    driver.find_element_by_class_name('login__form_action_container').click()
-    sel = Selector(text=driver.page_source)
-    page = 1
-    all_profiles = []
-    while True:
-        url = f'https://www.linkedin.com/search/results/people/?firstName={name}&origin=FACETED_SEARCH&page={page}&title={position}/'
-        driver.get(url)
-        sel = Selector(text=driver.page_source)
-        try:
-            sel.xpath('/html/body//h1/text()').getall()[0]
-        except Exception:
-            all_profiles += get_profiles_on_page()
-        else:
-            break
-        page += 1
-    all_profiles = [e.split('/')[-2] for e in all_profiles]
-    print(all_profiles)
-    driver.close()
+path = Path('names.txt')
+names = [
+	"Вера", 
+	"Анатолий", 
+	"Максим", 
+	"Александр", 
+	"Андрей", 
+	"Владислав", 
+	"Вадим", 
+	"Демид", 
+	"Денис", 
+	"Глеб", 
+	"Геннадий", 
+	"Вячеслав", 
+	"Павел",
+	"Семён",
+	"Арсен",
+	"Станислав",
+	"Федор",
+	"Ярослав",
+	"Яков",
+	"Тимофей",
+	"Юрий",
+	"Ростислав",
+	"Марк",
+	"Иннокентий",
+	"Захар"
+]
+res = []
+ParseFromLinkedin.enter()
+for name in names:
+    print(name)
+    res += ParseFromLinkedin.search_and_get(name, 'менеджер')
+    path = Path('users_id_workers1.txt')
+    path.write_text(json.dumps(res, indent=2), encoding='utf-8')
 
 
-search_and_get('василий', 'грузчик')

@@ -2,6 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from parsel import Selector
 import time
+import json
+from pathlib import Path
+
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
@@ -15,7 +18,7 @@ def enter():
     driver.get('https://www.linkedin.com')
     driver.find_element_by_class_name('nav__button-secondary').click()
     time.sleep(1)
-    driver.find_element_by_id('username').send_keys('e_m_p_t_y_e@mail.ru')
+    driver.find_element_by_id('username').send_keys('va_no_10@mail.ru')
     driver.find_element_by_id('password').send_keys('12121212EM')
     driver.find_element_by_class_name('login__form_action_container').click()
 
@@ -143,17 +146,51 @@ def parse_next_page(user_id):
     res['languages'] = get_languages()
     res['skills'] = get_skills()
     res['interests'] = get_interests()
-    close()
     return res
 
 
-def main():
-    user_adil = '%D0%B8%D0%B2%D0%B0%D0%BD-%D0%B8%D0%B2%D0%B0%D0%BD%D0%BE%D0%B2-0aa3b380/'
-    user_oleg = 'oleg-nagaev-112a4392'
-    user_female = 'elena-caymaz-57b88937'
-    information = parse_from_linkedin(user_oleg)
-    print(information)
+def get_profiles_on_page():
+    global driver, sel
+    profile_pages = sel.xpath("/html/body//ul/li/div/div/div/a/@href").getall()
+    temp = [profile_pages[i] for i in range(0, len(profile_pages), 2)]
+    profile_pages = temp
+    return profile_pages
 
+
+def search_and_get(name, position):
+    global driver, sel
+    sel = Selector(text=driver.page_source)
+    page = 1
+    all_profiles = []
+    while True:
+        url = f'https://www.linkedin.com/search/results/people/?firstName={name}&origin=FACETED_SEARCH&page={page}&title={position}/'
+        driver.get(url)
+        sel = Selector(text=driver.page_source)
+        try:
+            sel.xpath('/html/body//h1/text()').getall()[0]
+        except Exception:
+            all_profiles += get_profiles_on_page()
+        else:
+            break
+        page += 1
+    all_profiles = [e.split('/')[-2] for e in all_profiles]
+    return all_profiles
+
+
+def main():
+    path = Path('users_id_workers.txt')
+    users_ids = json.loads(path.read_text(encoding='utf-8'))
+    enter()
+    res = []
+    for user_id in users_ids:
+        print(user_id)
+        res += [parse_next_page(user_id)]
+        _path = Path('information_about_managers.txt')
+        _path.write_text(json.dumps(res))
+    close()
+
+def _main():
+    print(parse_from_linkedin('em-em-20829b1b2'))
 
 if __name__ == '__main__':
-    main()
+    _main()
