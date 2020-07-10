@@ -1,23 +1,30 @@
 from selenium import webdriver
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from parsel import Selector
 import time
 
 options = webdriver.ChromeOptions()
 options.add_argument('headless')
+options.add_argument('window-size=1920x1080')
 driver = webdriver.Chrome(options=options)
 sel = Selector(text=driver.page_source)
 
 
-def enter(user_id):
-    global driver, sel
-    url = f'https://www.linkedin.com/in/{user_id}/'
+def enter():
+    global driver
     driver.get('https://www.linkedin.com')
     driver.find_element_by_class_name('nav__button-secondary').click()
     time.sleep(1)
     driver.find_element_by_id('username').send_keys('e_m_p_t_y_e@mail.ru')
     driver.find_element_by_id('password').send_keys('12121212EM')
     driver.find_element_by_class_name('login__form_action_container').click()
+
+
+def switch_to_page(user_id):
+    global driver, sel
+    url = f'https://www.linkedin.com/in/{user_id}/'
     driver.get(url)
+    time.sleep(1)
     sel = Selector(text=driver.page_source)
 
 
@@ -45,7 +52,7 @@ def get_about():
 
 def get_fullname():
     global sel
-    name = sel.xpath("//*[starts-with(@class, 'inline t-24 t-black t-normal break-words')]/text()").extract_first()
+    name = sel.xpath("/html/body//main//section/div/div/div/ul/li/text()").getall()[0]
     return name.strip()
 
 
@@ -111,25 +118,40 @@ def close():
 
 def parse_from_linkedin(user_id):
     res = dict()
-    enter(user_id)
-    time.sleep(1)
+    enter()
+    switch_to_page(user_id)
     res['fullname'] = get_fullname()
     res['about'] = get_about()
     scroll()
     res['organisations'] = get_organisations()
     res['experience'] = get_experience()
     res['languages'] = get_languages()
-    # res['skills'] = get_skills()
+    res['skills'] = get_skills()
+    res['interests'] = get_interests()
+    close()
+    return res
+
+
+def parse_next_page(user_id):
+    res = dict()
+    switch_to_page(user_id)
+    res['fullname'] = get_fullname()
+    res['about'] = get_about()
+    scroll()
+    res['organisations'] = get_organisations()
+    res['experience'] = get_experience()
+    res['languages'] = get_languages()
+    res['skills'] = get_skills()
     res['interests'] = get_interests()
     close()
     return res
 
 
 def main():
-    user_adil = 'adilkhan-kussidenov-4163841b2'
+    user_adil = '%D0%B8%D0%B2%D0%B0%D0%BD-%D0%B8%D0%B2%D0%B0%D0%BD%D0%BE%D0%B2-0aa3b380/'
     user_oleg = 'oleg-nagaev-112a4392'
     user_female = 'elena-caymaz-57b88937'
-    information = parse_from_linkedin(user_female)
+    information = parse_from_linkedin(user_oleg)
     print(information)
 
 
