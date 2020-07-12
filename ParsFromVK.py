@@ -54,12 +54,21 @@ def pars_from_vk(user_id):
     return (information_about_user, information_about_users_groups)
 
 
+def get_info(user_id):
+    global token
+    fields = 'photo_max'
+    response = requests.get(f'https://api.vk.com/method/users.get?access_token={token}&user_ids={user_id}&v=5.120&fields={fields}')
+    return response.json()['response'][0]
+
+
 def main():
-    user = 'sdamdfd;'
+    user = 'zacontent'
     if is_close(user):
         print('----')
     else:
         a, c = pars_from_vk(user)
+        l = get_info(user)
+        print(l)
         print(a)
         print(c)
 
