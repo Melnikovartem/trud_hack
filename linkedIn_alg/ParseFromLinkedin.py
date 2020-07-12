@@ -18,8 +18,8 @@ def enter():
     driver.get('https://www.linkedin.com')
     driver.find_element_by_class_name('nav__button-secondary').click()
     time.sleep(1)
-    driver.find_element_by_id('username').send_keys('va_no_10@mail.ru')
-    driver.find_element_by_id('password').send_keys('12121212EM')
+    driver.find_element_by_id('username').send_keys('emptyempty91@mail.ru')
+    driver.find_element_by_id('password').send_keys('testingempt')
     driver.find_element_by_class_name('login__form_action_container').click()
 
 
@@ -77,6 +77,7 @@ def get_experience():
         if e.strip() != 'Title' and e.strip() != '' and e.strip() != 'Keep in touch with your network':
             temp.append(e.strip())
     experience = temp
+    experience.pop()
     return experience
 
 
