@@ -7,7 +7,14 @@ def _information_about_user(user_link):
     global token
     fields = 'city,about,bdate,education,interests,career,universities,schools,occupation'
     response = requests.get(f'https://api.vk.com/method/users.get?access_token={token}&user_ids={user_link}&v=5.120&fields={fields}')
-    return response.json()['response'][0]
+    try:
+        response.json()['response'][0]
+    except Exception:
+        res = {}
+        res['is_closed'] = True
+        return res
+    else:
+        return response.json()['response'][0]
 
 
 # Парсинг друзей
@@ -48,7 +55,7 @@ def pars_from_vk(user_id):
 
 
 def main():
-    user = 'nomapunkkk'
+    user = 'sdamdfd;'
     if is_close(user):
         print('----')
     else:
